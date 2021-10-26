@@ -22,7 +22,7 @@ def log(log_str):
 def convert_time(start_date, end_date, start_reg_time):
     """ Преобразование времени в соответствии каждому региону для BPM """
 
-    if start_reg_time in ("0:00", "1:00", "2:00", "3:00", "4:00", "5:00"):
+    if start_reg_time in ("0:00", "1:00", "2:00", "3:00", "4:00", "5:00", "6:00"):
         start_date_for_bpm = end_date
         end_date_for_bpm = end_date
         start_time_for_bpm = start_reg_time
@@ -97,8 +97,10 @@ def main():
 
             reg_name = region_dict[mr_name]['region_for_bpm']
             start_reg_time = region_dict[mr_name]['time'].split(":")[0]
-            if start_reg_time in ("00"):
-                start_reg_time = "{}:00".format(start_reg_time[0])
+            if start_reg_time in "00":
+                start_reg_time = "0:00"
+            elif start_reg_time in "01":
+                start_reg_time = "1:00"
             else:
                 start_reg_time = "{}:00".format(start_reg_time)
             print(reg_name)
