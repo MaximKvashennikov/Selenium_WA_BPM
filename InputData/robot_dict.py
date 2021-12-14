@@ -61,7 +61,7 @@ region_dict = {'Черноземье - Белгород': {'time': '00:00:00',
                                                          },
                'Байкал и Дальний Восток - Сахалин': {'time': '16:00:00',
                                                      'region_for_bpm': 'Южно-Сахалинск',
-                                                     'mail': ('alexey.turkin@tele2.ru,'
+                                                     'mail': ('alexander.samarsky@tele2.ru,'
                                                               'roman.isaev@tele2.ru')
                                                      },
                'Байкал и Дальний Восток - Биробиджан': {'time': '17:00:00',
@@ -70,7 +70,8 @@ region_dict = {'Черноземье - Белгород': {'time': '00:00:00',
                                                         },
                'Байкал и Дальний Восток - Камчатка': {'time': '15:00:00',
                                                       'region_for_bpm': 'Петропавловск-Камчатский',
-                                                      'mail': 'victor.v.kovalev@tele2.ru'
+                                                      'mail': ('Roman.Zhernov@tele2.ru,'
+                                                               'Denis.Lymarev@tele2.ru')
                                                       },
                'Байкал и Дальний Восток - Магадан': {'time': '17:00:00',
                                                      'region_for_bpm': 'Магадан',
@@ -233,12 +234,12 @@ region_dict = {'Черноземье - Белгород': {'time': '00:00:00',
                'Центр - Владимир': {'time': '00:00:00',
                                     'region_for_bpm': 'Владимир',
                                     'mail': ('nikolay.kostikov@tele2.ru,'
-                                             'Rima.Strelnikova@tele2.ru,'
+                                             'Mikhail.Kuznetsov@tele2.ru,'
                                              'Anton.Ryzhov@tele2.ru')
                                     },
                'Центр - Калуга': {'time': '00:00:00',
                                   'region_for_bpm': 'Калуга',
-                                  'mail': ('Evgeny.Gorelov@tele2.ru,'
+                                  'mail': ('mikhail.yartsev@tele2.ru,'
                                            'Alexander.Chepa@tele2.ru')
                                   },
                'Центр - Кострома': {'time': '00:00:00',
