@@ -12,7 +12,6 @@ class WaBPM:
     def __init__(self, responsible, executor, region_name, mr_name, start_date_for_bpm, end_date_for_bpm,
                  start_time_for_bpm,
                  end_time_for_bpm, rrl_list_sw_file, influence_list_sw_file, path_to_driver=None):
-        # self.driver = webdriver.Chrome()
         self.driver = webdriver.Chrome(executable_path=path_to_driver)
         self.action = ActionChains(self.driver)
         self.responsible = responsible
@@ -57,7 +56,7 @@ class WaBPM:
         return text_wa
 
     def input_config(self):
-        time.sleep(2)
+        time.sleep(4)
         wait = WebDriverWait(self.driver, 30)
         wait.until(EC.element_to_be_clickable(
             (By.XPATH, '//*[@id="UsrWorkOrderPageUsrShortDescriptionComboBoxEdit-el"]')))
@@ -72,23 +71,43 @@ class WaBPM:
         self.action.perform()
 
     def input_access(self):
-
+        self.driver.execute_script("window.scrollTo(0, 0)")
         self.driver.find_element_by_xpath('//*[@id="UsrWorkOrderPageUsrWODestinationLookupEdit-el"]').send_keys(
-            "Сети доступа")
+            "Сети доступа", Keys.ENTER)
+        time.sleep(5)
+
+        self.driver.find_element_by_xpath('//*[@id="searchEdit-el"]').click()
         time.sleep(1)
-        self.action.send_keys(Keys.ENTER).perform()
-        time.sleep(1)
-        self.driver.find_element_by_xpath('//*[@id="searchEdit-el"]').send_keys("Сети доступа")
-        time.sleep(1)
-        self.action.send_keys(Keys.ENTER).perform()
-        time.sleep(1)
-        self.driver.find_element_by_xpath('//*[@id="grid-item-0418133e-9445-4897-8f72-7d60011a7836"]/div[1]').click()
+
+        """ срез [:-2] позволяет избежать ошибки stale element reference: element is not 
+        attached to the page document, до обногвления BPM ее не было"""
+
+        access_list = [item.text for item in self.driver.find_element_by_xpath(
+            '//*[@id="grid-grid-wrap"]').find_elements_by_tag_name("div")[:-2]]
+        access_list = [web_access.split("\n")[0] for web_access in access_list if
+                       "\n" in web_access and "Сети доступа" in web_access]
+        print(access_list)
+
+        def search_index():
+            for index, item in enumerate(access_list):
+                if item == "Сети доступа":
+                    return index
+
+        access_position = int(search_index())
+        print(access_position)
+        xpath_str = '//*[@id="grid-grid-wrap"]/div[{}]'.format(access_position + 2)
+
+        self.driver.find_element_by_xpath(xpath_str).click()
+        # self.driver.find_element_by_xpath('//*[@id="grid-item-0418133e-9445-4897-8f72-7d60011a7836"]/div[1]').click()
         self.driver.implicitly_wait(5)
         time.sleep(1)
 
         try:
-            self.driver.find_element_by_xpath('//*[@id="t-comp288-textEl"]').click()
-            self.driver.implicitly_wait(10)
+            self.driver.execute_script(
+                "document.getElementById('selectionControlsContainerLookupPage').children[0].click()")
+            time.sleep(2)
+            # self.driver.find_element_by_xpath('//*[@id="selectionControlsContainerLookupPage"]/div[0]').click()
+            # self.driver.implicitly_wait(10)
         except Exception:
             self.driver.find_element_by_id('grid-item-0418133e-9445-4897-8f72-7d60011a7836').click()
             self.driver.implicitly_wait(10)
@@ -106,8 +125,6 @@ class WaBPM:
         self.driver.find_element_by_xpath('//*[@id="grid-grid-wrap"]/div[2]').click()
         self.driver.implicitly_wait(10)
         time.sleep(1)
-        # меняется цифра в пути
-        # document.querySelector("#t-comp342-textEl")
         self.driver.execute_script(
             "document.getElementById('selectionControlsContainerLookupPage').children[0].click()")
         time.sleep(2)
@@ -136,6 +153,10 @@ class WaBPM:
         self.click_pop_up_window()
 
         self.driver.find_element_by_xpath('//*[@id="UsrWorkOrderPageUsrPlannedTimeEndTimeEdit-el"]').click()
+        self.driver.find_element_by_xpath('//*[@id="UsrWorkOrderPageUsrPlannedTimeEndTimeEdit-el"]').send_keys(
+            4 * Keys.BACKSPACE)
+
+        time.sleep(1)
         self.driver.find_element_by_xpath('//*[@id="UsrWorkOrderPageUsrPlannedTimeEndTimeEdit-el"]'). \
             send_keys(self.end_time_for_bpm, Keys.TAB)
 
@@ -208,7 +229,7 @@ class WaBPM:
         time.sleep(1)
 
         city_list = [item.text for item in self.driver.find_element_by_xpath(
-            '//*[@id="grid-grid-wrap"]').find_elements_by_tag_name("div")]
+            '//*[@id="grid-grid-wrap"]').find_elements_by_tag_name("div")[:-2]]
 
         if region_name not in ("Омск", "Томск"):
             city_list = [city.split("\n")[0] for city in city_list if "\n" in city and region_name in city]
@@ -226,8 +247,7 @@ class WaBPM:
         region_position = int(search_index())
         print(region_position)
         xpath_str = '//*[@id="grid-grid-wrap"]/div[{}]/div[1]/span/input'.format(region_position + 2)
-        # WORK
-        # self.driver.find_element_by_xpath('//html/body/div[10]/div[2]/div/div/div/div[4]/div[1]/span/input').click()
+
         self.driver.find_element_by_xpath(xpath_str).click()
         self.driver.execute_script(
             "document.getElementById('selectionControlsContainerLookupPage').children[0].click()")
@@ -260,8 +280,15 @@ class WaBPM:
         except Exception:
             print("Нет пересечений")
 
+    def authorization_bpm(self):
+        time.sleep(3)
+        action = ActionChains(self.driver)
+        action.key_down(Keys.ALT).key_down(Keys.ENTER).perform()
+        time.sleep(10)
+
     def run_wa(self):
         self.get_start_window()
+        self.authorization_bpm()
         self.add_work()
         # text_wa = self.get_sr()
         self.input_config()
@@ -281,4 +308,3 @@ class WaBPM:
         self.driver.quit()
 
         return text_wa
-
