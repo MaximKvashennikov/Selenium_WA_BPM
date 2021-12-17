@@ -263,9 +263,10 @@ class WaBPM:
 
         self.driver.find_element_by_xpath('//*[@id="grid-grid-wrap"]/div[3]/div[1]/span/input').click()
         self.driver.find_element_by_xpath('//*[@id="grid-grid-wrap"]/div[4]/div[1]/span/input').click()
-        self.driver.find_element_by_xpath('//*[@id="grid-grid-wrap"]/div[8]/div[1]/span/input').click()
-        self.driver.find_element_by_xpath('//*[@id="grid-grid-wrap"]/div[9]/div[1]/span/input').click()
+        self.driver.find_element_by_xpath('//*[@id="grid-grid-wrap"]/div[5]/div[1]/span/input').click()
         self.driver.find_element_by_xpath('//*[@id="grid-grid-wrap"]/div[10]/div[1]/span/input').click()
+        self.driver.find_element_by_xpath('//*[@id="grid-grid-wrap"]/div[11]/div[1]/span/input').click()
+        self.driver.find_element_by_xpath('//*[@id="grid-grid-wrap"]/div[12]/div[1]/span/input').click()
 
         self.driver.execute_script(
             "document.getElementById('selectionControlsContainerLookupPage').children[0].click()")
